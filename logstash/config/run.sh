@@ -13,7 +13,9 @@
 
 set -e
 host="elasticsearch"
-until curl -XGET $host:9200; do
+host2="elasticsearch2"
+host3="elasticsearch3"
+until curl -XGET $host:9200 || curl  -XGET $host2:9200 || curl  -XGET $host3:9200; do
   >&2 echo "Elastic is unavailable - sleeping"
   sleep 1
 done

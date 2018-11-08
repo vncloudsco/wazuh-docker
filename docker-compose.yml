@@ -3,7 +3,8 @@ version: '2'
 
 services:
   wazuh:
-    image: wazuh/wazuh:3.6.1_6.4.2
+#   image: wazuh/wazuh:3.6.1_6.4.2
+    build: ./wazuh 
     hostname: wazuh-manager
     restart: always
     ports:
@@ -22,22 +23,48 @@ services:
 #   command: ["echo 'hello world'"]
     depends_on:
       - logstash
+      - logstash2
   logstash:
-    image: wazuh/wazuh-logstash:3.6.1_6.4.2
+#   image: wazuh/wazuh-logstash:3.6.1_6.4.2
+    build: ./logstash 
     hostname: logstash
     restart: always
 #    volumes:
 #      - my-path:/etc/logstash/conf.d:Z
     links:
       - elasticsearch:elasticsearch
+      - elasticsearch:elasticsearch2
+      - elasticsearch:elasticsearch3  
     ports:
       - "5000:5000"
     networks:
       - docker_elk
     depends_on:
-      - elasticsearch
+      - elasticsearch      
+      - elasticsearch2
+      - elasticsearch3  
     environment:
       - LS_HEAP_SIZE=2048m
+  logstash2:
+    build: ./logstash
+    hostname: logstash2
+    restart: always
+#    volumes:
+#      - my-path:/etc/logstash2/conf.d:Z
+    links:
+      - elasticsearch:elasticsearch
+      - elasticsearch:elasticsearch2
+      - elasticsearch:elasticsearch3  
+#    ports:
+#      - "5000:5000"
+    networks:
+      - docker_elk
+    depends_on:
+      - elasticsearch
+      - elasticsearch2
+      - elasticsearch3
+    environment: 
+      - LS_HEAP_SIZE=2048
   elasticsearch:
     image: docker.elastic.co/elasticsearch/elasticsearch:6.4.2
     hostname: elasticsearch
@@ -50,7 +77,10 @@ services:
       - cluster.name=wazuh
       - network.host=0.0.0.0
       - bootstrap.memory_lock=true
-      - "ES_JAVA_OPTS=-Xms1g -Xmx1g"
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+      - "discovery.zen.ping.unicast.hosts=elasticsearch,elasticsearch2,elasticsearch3"
+#      - "discovery.zen.ping.unicast.hosts=elasticsearch,elasticsearch2"
+      - "discovery.zen.minimum_master_nodes=2"
     ulimits:
       memlock:
         soft: -1
@@ -58,6 +88,55 @@ services:
     mem_limit: 2g
 #    volumes:
 #      - my-path:/usr/share/elasticsearch/data:Z
+    networks:
+        - docker_elk
+  elasticsearch2:
+    image: docker.elastic.co/elasticsearch/elasticsearch:6.4.2
+    hostname: elasticsearch2
+    restart: always
+#    ports:
+#      - "9200:9200"
+#      - "9300:9300"
+    environment:
+      - node.name=node-2
+      - cluster.name=wazuh
+      - network.host=0.0.0.0
+      - bootstrap.memory_lock=true
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+      - "discovery.zen.ping.unicast.hosts=elasticsearch,elasticsearch2,elasticsearch3"
+#      - "discovery.zen.ping.unicast.hosts=elasticsearch,elasticsearch2"
+      - "discovery.zen.minimum_master_nodes=2"
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    mem_limit: 2g
+#    volumes:
+#      - my-path:/usr/share/elasticsearch2/data:Z
+    networks:
+        - docker_elk
+  elasticsearch3:
+    image: docker.elastic.co/elasticsearch/elasticsearch:6.4.2
+    hostname: elasticsearch3
+    restart: always
+#    ports:
+#      - "9200:9200"
+#      - "9300:9300"
+    environment:
+      - node.name=node-3
+      - cluster.name=wazuh
+      - network.host=0.0.0.0
+      - bootstrap.memory_lock=true
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+      - "discovery.zen.ping.unicast.hosts=elasticsearch,elasticsearch2,elasticsearch3"
+      - "discovery.zen.minimum_master_nodes=2"  
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    mem_limit: 2g
+#    volumes:
+#      - my-path:/usr/share/elasticsearch3/data:Z
     networks:
         - docker_elk
   kibana:
@@ -72,6 +151,8 @@ services:
       - docker_elk
     depends_on:
       - elasticsearch
+      - elasticsearch2
+      - elasticsearch3
     links:
       - elasticsearch:elasticsearch
       - wazuh:wazuh

@@ -13,6 +13,7 @@ filebeat:
 output:
  logstash:
    # The Logstash hosts
-   hosts: ["logstash:5000"]
+   hosts: ["logstash:5000","logstash2:5000"]
+   loadbalance: true
 #   ssl:
 #     certificate_authorities: ["/etc/filebeat/logstash.crt"]
