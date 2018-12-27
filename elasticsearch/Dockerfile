@@ -5,7 +5,7 @@ FROM openjdk:8-jre-alpine
 
 ENV ES_TMPDIR "/tmp"
 ENV ES_VERSION 6.5.4
-ENV SG_VERSION "21.0"
+ENV SG_VERSION "24.0"
 ENV DOWNLOAD_URL "https://artifacts.elastic.co/downloads/elasticsearch"
 ENV ES_TARBAL "${DOWNLOAD_URL}/elasticsearch-${ES_VERSION}.tar.gz"
 ENV ES_TARBALL_ASC "${DOWNLOAD_URL}/elasticsearch-${ES_VERSION}.tar.gz.asc"
