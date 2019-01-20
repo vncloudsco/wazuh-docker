@@ -1,18 +1,79 @@
 #!/bin/bash
 # Wazuh App Copyright (C) 2018 Wazuh Inc. (License GPLv2)
 
-#
-# OSSEC container bootstrap. See the README for information of the environment
-# variables expected by this script.
-#
+FILEBEAT_VERSION=6.5.4
+WAZUH_VERSION=3.8.0-1
 
-#
+source data_dirs.env
 
-#
-# Startup the services
-#
+# Updating image
+apt-get install apt-transport-https curl add-apt-repository -y
+apt-get update && apt-get upgrade -y -o Dpkg::Options::="--force-confold"
 
-source /data_dirs.env
+# Set Wazuh repository.
+echo "deb https://packages.wazuh.com/3.x/apt/ stable main" | tee /etc/apt/sources.list.d/wazuh.list
+curl -s https://packages.wazuh.com/key/GPG-KEY-WAZUH | apt-key add -
+
+# Set nodejs repository.
+curl --silent --location https://deb.nodesource.com/setup_8.x | bash -
+
+# Creating ossec user as uid:gid 1000:1000
+groupadd -g 1000 ossec
+useradd -u 1000 -g 1000 -d /var/ossec ossec
+
+# Configure postfix
+echo "postfix postfix/mailname string wazuh-manager" | debconf-set-selections
+echo "postfix postfix/main_mailer_type string 'Internet Site'" | debconf-set-selections
+
+# Add universe repository
+add-apt-repository universe
+
+# Install packages
+apt-get update && apt-get -y install openssl postfix bsd-mailx python-boto python-pip  \
+    apt-transport-https vim expect nodejs python-cryptography wazuh-manager=${WAZUH_VERSION} \
+    wazuh-api=${WAZUH_VERSION} mailutils libsasl2-modules
+
+# Create copies of original volumes
+cd /var/ossec
+for ossecdir in "${DATA_DIRS[@]}"; do
+  mv ${ossecdir} ${ossecdir}-template
+  ln -s $(realpath --relative-to=$(dirname ${ossecdir}) data)/${ossecdir} ${ossecdir}
+done
+
+# Installing and configuring fiebeat
+curl -L -O https://artifacts.elastic.co/downloads/beats/filebeat/filebeat-${FILEBEAT_VERSION}-amd64.deb &&\
+    dpkg -i filebeat-${FILEBEAT_VERSION}-amd64.deb && rm -f filebeat-${FILEBEAT_VERSION}-amd64.deb
+
+cp /tmp/filebeat.yml /etc/filebeat/
+chmod go-w /etc/filebeat/filebeat.yml
+
+# Setting volumes
+#VOLUME ["/var/ossec/data"]
+#VOLUME ["/etc/filebeat"]
+#VOLUME ["/etc/postfix"]
+
+# Services ports
+# EXPOSE 55000/tcp 1514/udp 1515/tcp 514/udp 1516/tcp
+
+# Adding services
+mkdir /etc/service/wazuh
+cp /tmp/wazuh.runit.service /etc/service/wazuh/run
+chmod +x /etc/service/wazuh/run
+
+mkdir /etc/service/wazuh-api
+cp /tmp/wazuh-api.runit.service /etc/service/wazuh-api/run
+chmod +x /etc/service/wazuh-api/run
+
+mkdir /etc/service/postfix
+cp /tmp/postfix.runit.service /etc/service/postfix/run
+chmod +x /etc/service/postfix/run
+
+mkdir /etc/service/filebeat
+cp /tmp/filebeat.runit.service /etc/service/filebeat/run
+chmod +x /etc/service/filebeat/run
+
+# Clean up
+apt-get clean && rm -rf /var/lib/apt/lists/* /var/tmp/*
 
 FIRST_TIME_INSTALLATION=false
 
@@ -129,4 +190,3 @@ do
   exec_cmd_stdout "${CUSTOM_COMMAND}"
 done
 
-/sbin/my_init 
