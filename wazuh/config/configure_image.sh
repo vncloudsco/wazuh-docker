@@ -7,7 +7,10 @@ WAZUH_VERSION=3.8.0-1
 source data_dirs.env
 
 # Updating image
-apt-get install apt-transport-https curl add-apt-repository -y
+apt-get update
+apt-get install apt-transport-https -y
+apt-get install software-properties-common -y
+apt-get install curl -y
 apt-get update && apt-get upgrade -y -o Dpkg::Options::="--force-confold"
 
 # Set Wazuh repository.
@@ -54,23 +57,6 @@ chmod go-w /etc/filebeat/filebeat.yml
 
 # Services ports
 # EXPOSE 55000/tcp 1514/udp 1515/tcp 514/udp 1516/tcp
-
-# Adding services
-mkdir /etc/service/wazuh
-cp /tmp/wazuh.runit.service /etc/service/wazuh/run
-chmod +x /etc/service/wazuh/run
-
-mkdir /etc/service/wazuh-api
-cp /tmp/wazuh-api.runit.service /etc/service/wazuh-api/run
-chmod +x /etc/service/wazuh-api/run
-
-mkdir /etc/service/postfix
-cp /tmp/postfix.runit.service /etc/service/postfix/run
-chmod +x /etc/service/postfix/run
-
-mkdir /etc/service/filebeat
-cp /tmp/filebeat.runit.service /etc/service/filebeat/run
-chmod +x /etc/service/filebeat/run
 
 # Clean up
 apt-get clean && rm -rf /var/lib/apt/lists/* /var/tmp/*
