@@ -28,7 +28,7 @@ if [ "$1" = 'elasticsearch' -a "$(id -u)" = '0' ]; then
 	set -- su-exec eulasticsearch "$@"
 	ES_JAVA_OPTS="-Des.network.host=$NETWORK_HOST -Des.logger.level=$LOG_LEVEL -Xms$HEAP_SIZE -Xmx$HEAP_SIZE"  $@ &
 else
-	$r@ &
+	$@ &
 fi
 
 
@@ -63,6 +63,10 @@ until curl -k -XGET $el_url; do
   sleep 5
 done
 
+
+
+
+
 chmod a+x /usr/share/elasticsearch/plugins/search-guard-6/tools/sgadmin.sh
 /usr/share/elasticsearch/plugins/search-guard-6/tools/sgadmin.sh \
 -cd /usr/share/elasticsearch/plugins/search-guard-6/sgconfig -icl -key \
@@ -74,8 +78,40 @@ chmod a+x /usr/share/elasticsearch/plugins/search-guard-6/tools/sgadmin.sh
 curl -k -u admin:admin "$el_url/_searchguard/authinfo?pretty"
 
 
+
+
+
+wazuhadmin_pwd=$(bash /usr/share/elasticsearch/plugins/search-guard-6/tools/hash.sh -p $WAZUHADMIN_PWD)
+
+echo "
+wazuhadmin:
+  hash: $wazuhadmin_pwd
+  roles:
+    - wazuhadmin_role" >> /usr/share/elasticsearch/plugins/search-guard-6/sgconfig/sg_internal_users.yml 
+
+cat /usr/share/elasticsearch/plugins/search-guard-6/sgconfig/sg_internal_users.yml 
+
+
+
+
+echo "
+sg_wazuh_admin:
+  backendroles:
+    - wazuhadmin_role" >> /usr/share/elasticsearch/plugins/search-guard-6/sgconfig/sg_roles_mapping.yml
+
+
+
+/usr/share/elasticsearch/plugins/search-guard-6/tools/sgadmin.sh \
+-cd /usr/share/elasticsearch/plugins/search-guard-6/sgconfig -icl -key \
+/usr/share/elasticsearch/config/kirk-key.pem -cert /usr/share/elasticsearch/config/kirk.pem -cacert \
+/usr/share/elasticsearch/config/root-ca.pem -h "${ELASTICSEARCH_URL}" -nhnv
+
+
+#Insert default templates
+cat /usr/share/elasticsearch/config/wazuh-elastic6-template-alerts.json | curl -k -u admin:admin -XPUT "https://127.0.0.1:9200/_template/wazuh" -H 'Content-Type: application/json' -d @-
+
 pkill -f elasticsearch
-curl -k -XPOST 'https://localhost:9200/_cluster/nodes/_local/_shutdown'
+
 #/run/auth/users.sh
 #/run/auth/sgadmin.sh
 
