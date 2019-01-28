@@ -44,10 +44,10 @@ services:
     build: ./kibana
     hostname: kibana
     restart: always
-#    ports:
-#      - "5601:5601"
-#    environment:
-#      - ELASTICSEARCH_URL=http://elasticsearch:9200
+    ports:
+      - "5601:5601"
+    environment:
+      - ELASTICSEARCH_URL=https://elasticsearch:9200
     networks:
       - docker_elk
     depends_on:

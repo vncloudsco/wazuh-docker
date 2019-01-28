@@ -4,7 +4,7 @@
 set -e
 
 if [ "x${ELASTICSEARCH_URL}" = "x" ]; then
-  el_url="https://elasticsearch:9200"
+  el_url="http://elasticsearch:9200"
 else
   el_url="${ELASTICSEARCH_URL}"
 fi

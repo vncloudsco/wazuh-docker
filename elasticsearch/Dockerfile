@@ -18,4 +18,3 @@ RUN /usr/share/elasticsearch/bin/elasticsearch-plugin install -b "com.floragunn:
 RUN chmod +x -R /run/
 
 ENTRYPOINT /entrypoint.sh
-

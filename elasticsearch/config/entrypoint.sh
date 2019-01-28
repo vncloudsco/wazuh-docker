@@ -70,16 +70,12 @@ chmod a+x /usr/share/elasticsearch/plugins/search-guard-6/tools/sgadmin.sh
 /usr/share/elasticsearch/config/root-ca.pem -h "${ELASTICSEARCH_URL}" -nhnv
 
 
-
-
-
-
 #/run/wait_until_started.sh
-curl -k -u admin:admin "https://${ELASTICSEARCH_URL}:9200/_searchguard/authinfo?pretty"
+curl -k -u admin:admin "$el_url/_searchguard/authinfo?pretty"
 
 
-
-curl -k -XPOST 'http://localhost:9200/_cluster/nodes/_local/_shutdown'
+pkill -f elasticsearch
+curl -k -XPOST 'https://localhost:9200/_cluster/nodes/_local/_shutdown'
 #/run/auth/users.sh
 #/run/auth/sgadmin.sh
 
