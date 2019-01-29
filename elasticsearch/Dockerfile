@@ -8,6 +8,8 @@ ENV SG_VERSION "24.0"
 #ENV elasticsearch "/usr/share/elasticsearch/"
 
 ADD https://raw.githubusercontent.com/wazuh/wazuh/3.8/extensions/elasticsearch/wazuh-elastic6-template-alerts.json /usr/share/elasticsearch/config
+
+COPY config/tlsconfig.yml /tlsconfig.yml
 COPY config/entrypoint.sh /entrypoint.sh
 COPY config/sg_roles.yml /sg_roles.yml
 #COPY config/elasticsearch.yml /etc/elasticsearch/elasticsearch.yml
