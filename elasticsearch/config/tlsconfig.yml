@@ -2,7 +2,7 @@ ca:
    root:
       dn: CN=root.ca.example.com,OU=CA,O=Example Com\, Inc.,DC=example,DC=com
       keysize: 2048
-      pkPassword: root-ca-password
+      pkPassword: changeme 
       validityDays: 3650
       file: root-ca.pem
 defaults:
@@ -18,9 +18,7 @@ nodes:
   - name: localhost
     dn: CN=localhost,OU=Ops,O=Example Com\, Inc.,DC=example,DC=com
 clients:
-  - name: spock
-    dn: CN=spock.example.com,OU=Ops,O=Example Com\, Inc.,DC=example,DC=com
-  - name: kirk
-    dn: CN=kirk.example.com,OU=Ops,O=Example Com\, Inc.,DC=example,DC=com
+  - name: admin 
+    dn: CN=admin.example.com,OU=Ops,O=Example Com\, Inc.,DC=example,DC=com
     admin: true
 

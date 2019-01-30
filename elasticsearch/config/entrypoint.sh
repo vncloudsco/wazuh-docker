@@ -32,18 +32,25 @@ else
 fi
 
 
+if [ "${SEARCHGUARD}" = "enabled" ]; then
+
+if [ ! -f /usr/share/elasticsearch/config/ ]; then
+    echo "File not found!"
+fi
 
 mkdir sgtlstool && cd sgtlstool && \
   wget https://search.maven.org/remotecontent?filepath=com/floragunn/search-guard-tlstool/1.6/search-guard-tlstool-1.6.tar.gz -O search-guard-tlstool-1.6.tar.gz && \
   tar -xvzf search-guard-tlstool-1.6.tar.gz
 
 
-tools/sgtlstool.sh -c /tlsconfig.yml -ca -crt
+mkdir out && cp /usr/share/elasticsearch/config/root-ca.pem out/ && cp /usr/share/elasticsearch/config/root-ca.key out/
+tools/sgtlstool.sh -c /tlsconfig.yml  -crt
 
+cat out/root-ca.pem
 cp out/*.pem /usr/share/elasticsearch/config
 cp out/*.key /usr/share/elasticsearch/config
 
-admin_cert_password=$(cat out/client-certificates.readme | egrep ^CN=kirk.example.com.*Password |  grep -oE '[^ ]+$' )
+admin_cert_password=$(cat out/client-certificates.readme | egrep ^CN=admin.example.com.*Password |  grep -oE '[^ ]+$' )
 #hostname dependant $hostname_elasticsearch_config_snippet.yml
 cat out/localhost_elasticsearch_config_snippet.yml >> /usr/share/elasticsearch/config/elasticsearch.yml
 echo "xpack.security.enabled: false" >> /usr/share/elasticsearch/config/elasticsearch.yml
@@ -51,10 +58,6 @@ echo "xpack.security.enabled: false" >> /usr/share/elasticsearch/config/elastics
 cd ..
 
 
-#chmod a+x /usr/share/elasticsearch/plugins/search-guard-6/tools/install_demo_configuration.sh
-
-
-#/usr/share/elasticsearch/plugins/search-guard-6/tools/install_demo_configuration.sh -y
 
 
 su -c "elasticsearch &" elasticsearch
@@ -80,7 +83,7 @@ done
 chmod a+x /usr/share/elasticsearch/plugins/search-guard-6/tools/sgadmin.sh
 /usr/share/elasticsearch/plugins/search-guard-6/tools/sgadmin.sh \
 -cd /usr/share/elasticsearch/plugins/search-guard-6/sgconfig -icl -key \
-/usr/share/elasticsearch/config/kirk.key   -keypass "$admin_cert_password" -cert /usr/share/elasticsearch/config/kirk.pem -cacert \
+/usr/share/elasticsearch/config/admin.key   -keypass "$admin_cert_password" -cert /usr/share/elasticsearch/config/admin.pem -cacert \
 /usr/share/elasticsearch/config/root-ca.pem -h "${ELASTICSEARCH_URL}" 
 
 
@@ -111,9 +114,10 @@ sg_wazuh_admin:
 
 /usr/share/elasticsearch/plugins/search-guard-6/tools/sgadmin.sh \
 -cd /usr/share/elasticsearch/plugins/search-guard-6/sgconfig -icl -key \
-/usr/share/elasticsearch/config/kirk.key  -keypass "$admin_cert_password" -cert /usr/share/elasticsearch/config/kirk.pem -cacert \
+/usr/share/elasticsearch/config/admin.key  -keypass "$admin_cert_password" -cert /usr/share/elasticsearch/config/admin.pem -cacert \
 /usr/share/elasticsearch/config/root-ca.pem -h "${ELASTICSEARCH_URL}" 
 
+fi
 
 #Insert default templates
 cat /usr/share/elasticsearch/config/wazuh-elastic6-template-alerts.json | curl -k -u admin:admin -XPUT "https://127.0.0.1:9200/_template/wazuh" -H 'Content-Type: application/json' -d @-

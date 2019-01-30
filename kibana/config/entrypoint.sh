@@ -17,8 +17,6 @@ done
 >&2 echo "Elastic is up - executing command"
 
 #Insert default templates
-cat /usr/share/kibana/config/wazuh-elastic6-template-alerts.json | curl -k -XPUT "$el_url/_template/wazuh" -H 'Content-Type: application/json' -d @-
-sleep 5
 
 echo "Setting API credentials into Wazuh APP"
 CONFIG_CODE=$(curl -k -s -o /dev/null -w "%{http_code}" -XGET $el_url/.wazuh/wazuh-configuration/1513629884013)

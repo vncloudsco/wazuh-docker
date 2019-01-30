@@ -48,6 +48,8 @@ services:
       - "9300:9300"
     environment:
       - WAZUHADMIN_PWD=changeme
+      - SEARCHGUARD=enabled
+      - CA_PASSWORD=changeme
       - node.name=node-1
       - cluster.name=wazuh
       - network.host=0.0.0.0

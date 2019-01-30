@@ -11,6 +11,8 @@ RUN NODE_OPTIONS="--max-old-space-size=3072" /usr/share/kibana/bin/kibana-plugin
     chown -R kibana:kibana /usr/share/kibana &&\
     rm -rf /tmp/*
 
+
+COPY config/root-ca.pem /usr/share/kibana/config
 COPY config/kibana.yml /usr/share/kibana/config
 COPY config/entrypoint.sh /entrypoint.sh
 RUN chmod 755 /entrypoint.sh
@@ -42,7 +44,7 @@ ENV PATTERN="" \
     WAZUH_MONITORING_FREQUENCY="" \
     WAZUH_MONITORING_SHARDS="" \
     WAZUH_MONITORING_REPLICAS="" \
-    ADMIN_PRIVILEGES=""
+    ADMIN_PRIVILEGES="" 
 
 
 COPY --chown=kibana:kibana ./config/wazuh_app_config.sh ./

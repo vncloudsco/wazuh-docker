@@ -1,17 +1,22 @@
 # Wazuh App Copyright (C) 2018 Wazuh Inc. (License GPLv2)
 FROM docker.elastic.co/elasticsearch/elasticsearch:6.5.4
-ENV ES_TMPDIR "/tmp"
-ENV ES_VERSION 6.5.4
-ENV SG_VERSION "24.0"
 
+ENV PATTERN="" \
+    CHECKS_PATTERN="" \
+    CHECKS_TEMPLATE="" \
+    ES_VERSION="6.5.4" \
+    SG_VERSION="24.0" \
+    CA_PASSWORD="changeme" \
+    SEARCHGUARD="disabled" 
 
-#ENV elasticsearch "/usr/share/elasticsearch/"
 
 ADD https://raw.githubusercontent.com/wazuh/wazuh/3.8/extensions/elasticsearch/wazuh-elastic6-template-alerts.json /usr/share/elasticsearch/config
 
 COPY config/tlsconfig.yml /tlsconfig.yml
 COPY config/entrypoint.sh /entrypoint.sh
 COPY config/sg_roles.yml /sg_roles.yml
+COPY config/root-ca.pem /usr/share/elasticsearch/config
+COPY config/root-ca.key /usr/share/elasticsearch/config
 #COPY config/elasticsearch.yml /etc/elasticsearch/elasticsearch.yml
 
 RUN chmod 755 /entrypoint.sh
