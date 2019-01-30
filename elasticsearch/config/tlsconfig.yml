@@ -15,8 +15,8 @@ defaults:
   httpsEnabled: true
   reuseTransportCertificatesForHttp: false
 nodes:
-  - name: localhost
-    dn: CN=localhost,OU=Ops,O=Example Com\, Inc.,DC=example,DC=com
+  - name: elasticsearch 
+    dn: CN=elasticsearch
 clients:
   - name: admin 
     dn: CN=admin.example.com,OU=Ops,O=Example Com\, Inc.,DC=example,DC=com

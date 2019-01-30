@@ -34,9 +34,7 @@ fi
 
 if [ "${SEARCHGUARD}" = "enabled" ]; then
 
-if [ ! -f /usr/share/elasticsearch/config/ ]; then
-    echo "File not found!"
-fi
+if [ ! -f /usr/share/elasticsearch/config/admin.pem ]; then
 
 mkdir sgtlstool && cd sgtlstool && \
   wget https://search.maven.org/remotecontent?filepath=com/floragunn/search-guard-tlstool/1.6/search-guard-tlstool-1.6.tar.gz -O search-guard-tlstool-1.6.tar.gz && \
@@ -52,7 +50,7 @@ cp out/*.key /usr/share/elasticsearch/config
 
 admin_cert_password=$(cat out/client-certificates.readme | egrep ^CN=admin.example.com.*Password |  grep -oE '[^ ]+$' )
 #hostname dependant $hostname_elasticsearch_config_snippet.yml
-cat out/localhost_elasticsearch_config_snippet.yml >> /usr/share/elasticsearch/config/elasticsearch.yml
+cat out/elasticsearch_elasticsearch_config_snippet.yml >> /usr/share/elasticsearch/config/elasticsearch.yml
 echo "xpack.security.enabled: false" >> /usr/share/elasticsearch/config/elasticsearch.yml
 
 cd ..
@@ -84,7 +82,7 @@ chmod a+x /usr/share/elasticsearch/plugins/search-guard-6/tools/sgadmin.sh
 /usr/share/elasticsearch/plugins/search-guard-6/tools/sgadmin.sh \
 -cd /usr/share/elasticsearch/plugins/search-guard-6/sgconfig -icl -key \
 /usr/share/elasticsearch/config/admin.key   -keypass "$admin_cert_password" -cert /usr/share/elasticsearch/config/admin.pem -cacert \
-/usr/share/elasticsearch/config/root-ca.pem -h "${ELASTICSEARCH_URL}" 
+/usr/share/elasticsearch/config/root-ca.pem -h "${ELASTICSEARCH_URL}" -nhnv
 
 
 #/run/wait_until_started.sh
@@ -112,10 +110,11 @@ sg_wazuh_admin:
     - wazuhadmin_role" >> /usr/share/elasticsearch/plugins/search-guard-6/sgconfig/sg_roles_mapping.yml
 
 
+fi
 /usr/share/elasticsearch/plugins/search-guard-6/tools/sgadmin.sh \
 -cd /usr/share/elasticsearch/plugins/search-guard-6/sgconfig -icl -key \
 /usr/share/elasticsearch/config/admin.key  -keypass "$admin_cert_password" -cert /usr/share/elasticsearch/config/admin.pem -cacert \
-/usr/share/elasticsearch/config/root-ca.pem -h "${ELASTICSEARCH_URL}" 
+/usr/share/elasticsearch/config/root-ca.pem -h "${ELASTICSEARCH_URL}" -nhnv
 
 fi
 
