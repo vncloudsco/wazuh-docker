@@ -1,9 +1,5 @@
 ca:
    root:
-      dn: CN=root.ca.example.com,OU=CA,O=Example Com\, Inc.,DC=example,DC=com
-      keysize: 2048
-      pkPassword: changeme 
-      validityDays: 3650
       file: root-ca.pem
 defaults:
   validityDays: 730
@@ -15,7 +11,7 @@ defaults:
   httpsEnabled: true
   reuseTransportCertificatesForHttp: false
 nodes:
-  - name: elasticsearch 
+  - name: elasticsearch
     dn: CN=elasticsearch
 clients:
   - name: admin 

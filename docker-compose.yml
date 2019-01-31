@@ -47,9 +47,7 @@ services:
       - "9200:9200"
       - "9300:9300"
     environment:
-      - WAZUHADMIN_PWD=changeme
       - SEARCHGUARD=enabled
-      - CA_PASSWORD=changeme
       - node.name=node-1
       - cluster.name=wazuh
       - network.host=0.0.0.0
@@ -71,6 +69,7 @@ services:
     ports:
       - "5601:5601"
     environment:
+      - SEARCHGUARD=enabled
       - ELASTICSEARCH_URL=https://elasticsearch:9200
     networks:
       - docker_elk

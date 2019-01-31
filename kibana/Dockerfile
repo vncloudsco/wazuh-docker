@@ -7,7 +7,6 @@ ADD https://packages.wazuh.com/wazuhapp/wazuhapp-${WAZUH_APP_VERSION}.zip /tmp
 
 
 RUN NODE_OPTIONS="--max-old-space-size=3072" /usr/share/kibana/bin/kibana-plugin install file:///tmp/wazuhapp-${WAZUH_APP_VERSION}.zip &&\
-    NODE_OPTIONS="--max-old-space-size=3072" /usr/share/kibana/bin/kibana-plugin install https://search.maven.org/remotecontent?filepath=com/floragunn/search-guard-kibana-plugin/6.5.4-17/search-guard-kibana-plugin-6.5.4-17.zip   &&\
     chown -R kibana:kibana /usr/share/kibana &&\
     rm -rf /tmp/*
 
@@ -44,12 +43,16 @@ ENV PATTERN="" \
     WAZUH_MONITORING_FREQUENCY="" \
     WAZUH_MONITORING_SHARDS="" \
     WAZUH_MONITORING_REPLICAS="" \
-    ADMIN_PRIVILEGES="" 
+    ADMIN_PRIVILEGES=""\
+    KIBANA_USER_PWD=""\
+    SEARCHGUARD="disabled"
 
 
 COPY --chown=kibana:kibana ./config/wazuh_app_config.sh ./
+COPY --chown=kibana:kibana ./config/searchguard_app_config.sh ./
 
 RUN chmod +x ./wazuh_app_config.sh
+RUN chmod +x ./searchguard_app_config.sh
 
 ENTRYPOINT /entrypoint.sh
 

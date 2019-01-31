@@ -9,14 +9,16 @@ else
   el_url="${ELASTICSEARCH_URL}"
 fi
 
+
+if [ "${SEARCHGUARD}" = "enabled" ]; then
+    ./searchguard_app_config.sh
+fi
+
 until curl -k -XGET $el_url; do
   >&2 echo "Elastic is unavailable - sleeping"
   sleep 5
 done
-
 >&2 echo "Elastic is up - executing command"
-
-#Insert default templates
 
 echo "Setting API credentials into Wazuh APP"
 CONFIG_CODE=$(curl -k -s -o /dev/null -w "%{http_code}" -XGET $el_url/.wazuh/wazuh-configuration/1513629884013)

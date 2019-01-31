@@ -33,13 +33,13 @@ elasticsearch.url: "https://elasticsearch:9200"
 # the username and password that the Kibana server uses to perform maintenance on the Kibana
 # index at startup. Your Kibana users still need to authenticate with Elasticsearch, which
 # is proxied through the Kibana server.
-elasticsearch.username: "admin"
-elasticsearch.password: "admin"
+#elasticsearch.username: "admin"
+#elasticsearch.password: "admin"
 
-elasticsearch.ssl.verificationMode: certificate 
-elasticsearch.requestHeadersWhitelist: [ "Authorization" , "sgtenant" ]
-xpack.security.enabled: false
-elasticsearch.ssl.certificateAuthorities: /usr/share/kibana/config/root-ca.pem
+#elasticsearch.ssl.verificationMode: certificate 
+#elasticsearch.requestHeadersWhitelist: [ "Authorization" , "sgtenant" ]
+#xpack.security.enabled: false
+#elasticsearch.ssl.certificateAuthorities: /usr/share/kibana/config/root-ca.pem
 
 # Paths to the PEM-format SSL certificate and SSL key files, respectively. These
 # files enable SSL for outgoing requests from the Kibana server to the browser.
@@ -68,7 +68,6 @@ elasticsearch.ssl.certificateAuthorities: /usr/share/kibana/config/root-ca.pem
 
 # List of Kibana client-side headers to send to Elasticsearch. To send *no* client-side
 # headers, set this value to [] (an empty list).
-# elasticsearch.requestHeadersWhitelist: [ authorization ]
 
 # Time in milliseconds for Elasticsearch to wait for responses from shards. Set to 0 to disable.
 # elasticsearch.shardTimeout: 0
