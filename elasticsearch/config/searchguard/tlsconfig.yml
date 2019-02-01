@@ -1,5 +1,7 @@
 ca:
    root:
+
+      pkPassword: ${CA_PWD} 
       file: root-ca.pem
 defaults:
   validityDays: 730

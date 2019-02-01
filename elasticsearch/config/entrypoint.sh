@@ -24,7 +24,9 @@ if [ "${SEARCHGUARD}" = "enabled" ]; then
 
     fi
 
+  else
 
+        su -c "/usr/share/elasticsearch/bin/elasticsearch &" elasticsearch
 fi
 
 #Insert default templates
@@ -33,7 +35,7 @@ cat /usr/share/elasticsearch/config/wazuh-elastic6-template-alerts.json | curl -
 
 
 
-pkill -f /usr/share/elasticsearch/bin/elasticsearch
+pkill -f elasticsearch
 
 
 su -c "/usr/share/elasticsearch/bin/elasticsearch " elasticsearch

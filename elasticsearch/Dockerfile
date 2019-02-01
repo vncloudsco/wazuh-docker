@@ -8,6 +8,7 @@ ENV PATTERN="" \
     SG_VERSION="24.0" \
     SEARCHGUARD="disabled"\ 
     WAZUHADMIN_PWD="changeme" \
+    CA_PWD="changeme" \
     ADMIN_PWD="admin" 
 
 ADD https://raw.githubusercontent.com/wazuh/wazuh/3.8/extensions/elasticsearch/wazuh-elastic6-template-alerts.json /usr/share/elasticsearch/config

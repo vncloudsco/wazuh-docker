@@ -11,7 +11,7 @@ fi
 
 
 if [ "${SEARCHGUARD}" = "enabled" ]; then
-    ./searchguard_app_config.sh
+    /searchguard_app_config.sh
 fi
 
 until curl -k -XGET $el_url; do
