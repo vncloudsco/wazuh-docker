@@ -16,4 +16,6 @@ VOLUME ["/etc/nginx/conf.d"]
 ENV NGINX_NAME="foo" \
     NGINX_PWD="bar"
 
+ENV NGINX_IP="allow":"all";"deny":"1.1.1.1"
+
 ENTRYPOINT /entrypoint.sh
