@@ -59,13 +59,12 @@ if [ ! -z "$NGINX_IP" ]; then
   do
     IFS=':' read -r -a ips <<< "${ip_list[index]}"
     if [ $index -eq 0 ]; then
-      let LIMITS=LIMITS+"${ips[0]}    ${ips[1]};\n"
+      LIMITS="${LIMITS} ${ips[0]}    ${ips[1]};\n"
     else
-      let LIMITS=LIMITS+"${ips[0]}    ${ips[1]};\n"
+      LIMITS="${LIMITS} ${ips[0]}    ${ips[1]};\n"
     fi
   done
-else
-
+fi
 
 echo "Configuring NGINX"
 cat > /etc/nginx/conf.d/default.conf <<EOF
@@ -88,7 +87,6 @@ server {
         proxy_buffer_size          128k;
         proxy_buffers              4 256k;
         proxy_busy_buffers_size    256k;
-
         ${LIMITS}
     }
 }
