@@ -40,8 +40,8 @@ In addition, a docker-compose file is provided to launch the containers mentione
 #### S3 Plugin
 
 - `ENABLE_CONFIGURE_S3`: If set as `true`, then the S3 plugin for Elasticsearch will be enabled.
-
-
+- `ELASTICSEARCH_IP`: `ENABLE_CONFIGURE_S3` variable must be `true`. Sets the cluster `memory_lock` value of the `bootstrap` block in the `elasticsearch.yml` configuration file.
+- `ELASTICSEARCH_PORT`: `ENABLE_CONFIGURE_S3` variable must be `true`. Sets the cluster `ping.unicast.hosts` value of the `discovery` block in the `elasticsearch.yml` configuration file.
 
 
 
