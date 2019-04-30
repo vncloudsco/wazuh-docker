@@ -17,6 +17,34 @@ In addition, a docker-compose file is provided to launch the containers mentione
 
 * Elasticsearch cluster. In the Elasticsearch Dockerfile we can visualize variables to configure an Elasticsearch Cluster. These variables are used in the file *config_cluster.sh* to set them in the *elasticsearch.yml* configuration file. You can see the meaning of the node variables [here](https://www.elastic.co/guide/en/elasticsearch/reference/current/modules-node.html) and other cluster settings [here](https://github.com/elastic/elasticsearch/blob/master/distribution/src/config/elasticsearch.yml).
 
+## Environment variables
+
+### Elasticsearch image
+
+- `ELASTICSEARCH_URL`: (Optional) The Elasticsearch URL. If empty, then it will be `http://elasticsearch:9200`.
+- `ELASTICSEARCH_PORT`: If set as `true`, then an Elasticsearch cluster will be configured.
+
+#### Cluster
+
+- `ELASTIC_CLUSTER`: If set as `true`, then an Elasticsearch cluster will be configured.
+- `CLUSTER_NAME`: `ELASTIC_CLUSTER` variable must be `true`. Sets the `cluster.name` option in the `elasticsearch.yml` configuration file.
+- `CLUSTER_NUMBER_OF_MASTERS`: `ELASTIC_CLUSTER` variable must be `true`. Sets the `discovery.zen.minimum_master_nodes` option in the `elasticsearch.yml` configuration file.
+- `CLUSTER_NODE_MASTER`: `ELASTIC_CLUSTER` variable must be `true`. Sets the cluster `name` value of the `node` block in the `elasticsearch.yml` configuration file.
+- `CLUSTER_NODE_DATA`: `ELASTIC_CLUSTER` variable must be `true`. Sets the cluster `data` value of the `node` block in the `elasticsearch.yml` configuration file.
+- `CLUSTER_NODE_INGEST`: `ELASTIC_CLUSTER` variable must be `true`. Sets the cluster `ingest` value of the `node` block in the `elasticsearch.yml` configuration file.
+- `CLUSTER_NODE_NAME`: `ELASTIC_CLUSTER` variable must be `true`. Sets the cluster `name` value of the `node` block in the `elasticsearch.yml` configuration file.
+- `CLUSTER_MAX_NODES`: `ELASTIC_CLUSTER` variable must be `true`. Sets the cluster `max_local_storage_nodes` value of the `node` block in the `elasticsearch.yml` configuration file.
+- `CLUSTER_MEMORY_LOCK`: `ELASTIC_CLUSTER` variable must be `true`. Sets the cluster `memory_lock` value of the `bootstrap` block in the `elasticsearch.yml` configuration file.
+- `CLUSTER_DISCOVERY_SERVICE`: `ELASTIC_CLUSTER` variable must be `true`. Sets the cluster `ping.unicast.hosts` value of the `discovery` block in the `elasticsearch.yml` configuration file.
+
+#### S3 Plugin
+
+- `ENABLE_CONFIGURE_S3`: If set as `true`, then the S3 plugin for Elasticsearch will be enabled.
+
+
+
+
+
 ## Documentation
 
 * [Wazuh full documentation](http://documentation.wazuh.com)
