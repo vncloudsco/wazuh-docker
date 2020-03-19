@@ -13,6 +13,9 @@ services:
       - "55000:55000"
     depends_on:
       - logstash
+    volumes:
+      - /home/wazuh-manager:/usr/share/elasticsearch/data:Z
+
   logstash:
     image: wazuh/wazuh-logstash:3.9.0_6.7.2
     hostname: logstash
@@ -25,6 +28,8 @@ services:
       - elasticsearch
     environment:
       - LS_HEAP_SIZE=2048m
+    volumes:
+      - /home/logstash:/usr/share/elasticsearch/data:Z
   elasticsearch:
     image: wazuh/wazuh-elasticsearch:3.9.0_6.7.2
     hostname: elasticsearch
@@ -42,6 +47,8 @@ services:
         soft: -1
         hard: -1
     mem_limit: 2g
+    volumes:
+      - /home/elasticsearch:/usr/share/elasticsearch/data:Z
   kibana:
     image: wazuh/wazuh-kibana:3.9.0_6.7.2
     hostname: kibana
@@ -53,6 +60,8 @@ services:
     links:
       - elasticsearch:elasticsearch
       - wazuh:wazuh
+    volumes:
+      - /home/kibana:/usr/share/elasticsearch/data:Z
   nginx:
     image: wazuh/wazuh-nginx:3.9.0_6.7.2
     hostname: nginx
@@ -67,3 +76,5 @@ services:
       - kibana
     links:
       - kibana:kibana
+    volumes:
+      - /home/nginx:/usr/share/elasticsearch/data:Z
